@@ -12,12 +12,11 @@
 }
 .detail-section{
     display: grid;
-    grid-template-columns: 5rem auto;
+    grid-template-columns: 5rem auto 5rem;
 }
 .template-conteiner:hover{
     cursor: pointer;
     transition: .1s all;
-    transform: scale(1.04);
 }
 .title{
     font-size: 1.6rem;
@@ -28,14 +27,20 @@
     margin-top: .2rem;
     font-size: 1.2rem;
 }
-.controls{
+.controls,.edit-btn{
     justify-self: end;
     transition: .2s all;
 }
 .controls:hover{
+    animation: shake 0.3s ease-in-out forwards;
+}
+.edit-btn{
+    align-self: center;
+}
+.edit-btn:hover{
     transition: .2s all;
     cursor: pointer;
-    animation: shake 0.3s ease-in-out forwards;
+    transform: scale(1.2);
 }
 
 @keyframes shake{

@@ -6,9 +6,10 @@ import {
 } from '@material-ui/core';
 
 import EmailEditor from "react-email-editor";
+import { store } from 'react-notifications-component';
 
+import ExportHTMLPopup from 'components/ExportHtmlPopup'
 import endpoints from 'endpoints.json';
-
 import axios from 'axios';
 
 import "./email-editor.css";
@@ -27,7 +28,29 @@ const CustomEmailEditor = () => {
   let [editor,setEditor] = useState(null);
   let [template,setTemplate] = useState({});
   let [draft,setDraft] = useState(null);
+  let [html,setHTML] = useState('');
   let [title,setTitle] = useState('');
+  let [popupOpen,setPopupOpen] = useState(false);
+  let notificationOptions={
+    insert: "top",
+    container: "top-center",
+    animationIn: ["animate__animated", "animate__fadeIn"],
+    animationOut: ["animate__animated", "animate__fadeOut"],
+    dismiss: {
+      duration: 4000,
+    }
+  }
+
+  const showNotification = (name,message,type) =>{
+    store.addNotification({
+      ...notificationOptions,
+      title:name,
+      message,type,
+    });
+  }
+
+
+
   const emailEditorRef = useCallback((node)=>{
     console.log('ref callback',node)
     
@@ -42,22 +65,27 @@ const CustomEmailEditor = () => {
     editor.exportHtml((data) => {
       const { design, html } = data;
       console.log("exportHtml", html);
+      setHTML(html);
+      setPopupOpen(true)
     });
   };
 
   const createTemplate = async (design) =>{
     console.log('creating...')
     try{
-      const payload = {title,shop:'email-editor-task',design_json:JSON.stringify(design)}
+      let shop = localStorage.getItem('shop')
+      const payload = {title,shop,design_json:JSON.stringify(design)}
       let res = await axios.post(endpoints.createTemplate,payload)
       if(res.data.created){
         console.log("create res",res)
-        alert("Saved")
+        showNotification('Created!',"Templated Created Successfully",'success')
         return res.data.template
       }
+      showNotification('Failed',"Template was not created. Please Try Again Later !",'danger')
     }
     catch(err){
       console.log("error creating ",err)
+      showNotification('Failed',"There was some error creating template. Please Try Again Later !",'danger')
       return false
     }
   }
@@ -70,19 +98,21 @@ const CustomEmailEditor = () => {
       console.log("id",id)
       let res = await axios.put(endpoints.updateTemplate+id,payload)
       if(res.data.updated){
-        alert("updated ")
+        showNotification('Updated!',"Templated Updated Successfully",'success')
         return true
       }
+      showNotification('Failed',"Template was not updated. Please Try Again Later !",'danger')
     }
     catch(err){
       console.log("error creating ",err)
+      showNotification('Failed',"There was some error updating the template. Please Try Again Later !",'danger')
       return false
     }
   }
 
   const saveDesign = async () => {
     if(title===""){
-      alert('Title Cant be empty')
+      showNotification('Enter Title',"Title cannot be empty. Please type a title for template",'danger')
       return 
     }
     editor.saveDesign( async (design) => {
@@ -103,6 +133,7 @@ const CustomEmailEditor = () => {
     });
   };
   const saveDraft = ()=>{
+    console.log("Saving Draft",draft)
     localStorage.setItem('draft',JSON.stringify(draft))
   }
   const onLoad = () => {  
@@ -115,15 +146,20 @@ const CustomEmailEditor = () => {
         
         clearInterval(interval);
 
-        if(Object.keys(template).length>0 && editor && editor!=null){
-          console.log('loading design',template)
-          const templateJson = JSON.parse(template.design_json);
-          editor.loadDesign(templateJson);
+        if(editor && editor!=null){
+          if(Object.keys(template).length>0 ){
+            console.log('loading design',template)
+            const templateJson = JSON.parse(template.design_json);
+            editor.loadDesign(templateJson);
+          }
           editor.addEventListener('design:updated', (data) => {
             editor.saveDesign(design=>{
+              let d = new Date();
               console.log("change")
-              if(template) setDraft({...template,title,design_json:JSON.stringify(design)})
-              else setDraft({title,design_json:JSON.stringify(design)})
+              if(template && template._id) setDraft({...template,title,design_json:JSON.stringify(design), createdAt:d.toISOString(),updatedAt:d.toISOString()})
+              else {
+                setDraft({title,design_json:JSON.stringify(design), createdAt:d.toISOString(),updatedAt:d.toISOString()})
+              }
             })      
           });
         }
@@ -138,9 +174,17 @@ const CustomEmailEditor = () => {
   useEffect(()=>{
     if(editor!=null) onLoad()
   },[editor])
+  useEffect(()=>{
+    setDraft({...draft,title})
+  },[title])
 
   useEffect(()=>{
     console.log('draft ',draft)
+
+    return ()=>{
+      console.log("return useEffect[]",draft)
+      saveDraft()
+    }
   },[draft])
 
   useEffect(()=>{
@@ -151,14 +195,12 @@ const CustomEmailEditor = () => {
       setTemplate(updatedTemplate)
       setTitle(updatedTemplate.title)
     }
-    return ()=>{
-      console.log("return useEffect[]")
-      saveDraft()
-    }
+    setDraft(JSON.parse(localStorage.getItem('draft')))
   },[])
   
   return (
-    <div className="App">
+    <div className="">
+      <ExportHTMLPopup html={html} title={title} open={popupOpen} setOpen={setPopupOpen} />
       <div className="title-bar" >
         <TextField
           className="title-field"

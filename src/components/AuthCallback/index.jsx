@@ -1,5 +1,8 @@
 import React, { useEffect } from 'react'
 import {useHistory} from 'react-router-dom';
+
+
+import { store } from 'react-notifications-component';
 import {sha256} from 'js-sha256';
 import axios from 'axios'
 import endpoints from 'endpoints.json'
@@ -12,7 +15,25 @@ const AuthCallback = () => {
     for (let param of query) {
         params[param[0]] = param[1]
     }
+
     console.log("params",params)
+    let notificationOptions={
+        insert: "top",
+        container: "top-center",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 4000,
+        }
+    }
+    const showNotification = (name,message,type) =>{
+    store.addNotification({
+        ...notificationOptions,
+        title:name,
+        message,type,
+    });
+    }
+    
     useEffect(()=>{
         const regex = /[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com/
         const hash = sha256.hmac.create(process.env.REACT_APP_SHOPIFY_API_SECRET);
@@ -32,21 +53,22 @@ const AuthCallback = () => {
                 console.log(res)
                 if(res.data.success){
                     localStorage.setItem('access_token',res.data.access_token)
-                    alert('Access Token Set')
+                    localStorage.setItem('shop',params.shop)
+                    showNotification("Authenticated Successfully","Successfully authenticated! Redirecting...",'success')
                     history.push('/')
                 }
                 else{
-                    alert("Auth Failed")
+                    showNotification("Authenticated Failed","Failed to authenticate.Try again Later!",'danger')
                 }
             })
             .catch(err=>{
-                alert('error getting access token')
+                showNotification("Error Authenticating","There was some error getting access token. Please Try again Later!",'danger')
                 console.log("Error",err)
             })
         }
         else{
+            showNotification("Incorrect Credentials","Shopify didn't authenticated your store either becuase you entered wrong credentials or there it might have been hampered.Please Try again after sometimes.",'danger')
             console.log("authg failed")
-            alert("Auth Failed")
         }
     },[])
      return (

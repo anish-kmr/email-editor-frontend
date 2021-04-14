@@ -35,3 +35,18 @@ html {
     --text-secondary: #4f515b;
     --text-light: #f3f3f3;
 }
+
+
+.helper-text{
+    display: flex;
+    align-items: center;
+    gap:1rem;
+    color:#707070;
+    font-size: 1.4rem;
+    margin-bottom: 3rem;    
+}
+
+.helper-icon{
+    width:2.5rem;
+    height: 2.5rem;
+}

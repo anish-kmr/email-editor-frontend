@@ -72,6 +72,9 @@ const TemplateItem = ({id,title,design_json,createdAt, updatedAt, handleDelete})
                     <div className="title">{title || 'Untitled Template'}</div>
                     <div className="created">{formatTime(createdAt)}</div>
                 </div>
+                <div className="edit-btn">
+                  <EditIcon style={{color:"#fff",width:'2.5rem',height:'2.5rem'}} />
+                </div>
 
             </div>
 

@@ -1,0 +1,26 @@
+.popup-title-bar{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.popup-controls{
+    color:var(--theme-secondary);
+    display: flex;
+    align-items: center;
+    gap:1rem;
+}
+.popup-controls>button{
+    color:var(--theme-secondary);;
+}
+.popup-content{
+    overflow-y: auto;
+    font-size: 1.4rem !important;
+}
+
+.close-btn{
+    padding-right:2rem !important;
+}
+.close-btn>button{
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+}
