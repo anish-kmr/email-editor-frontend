@@ -1,0 +1,16 @@
+.container{
+    position: relative;
+}
+.main{
+    height:100vh;
+    position: absolute;
+    top:0;
+    left:20rem;
+    width:calc(100vw - 20rem);
+    transition: .3s all;
+}
+.sm_main{
+    transition: .3s all;
+    left:5rem;
+    width:calc(100vw - 5rem);
+}

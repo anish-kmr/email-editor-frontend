@@ -1,0 +1,31 @@
+.title-bar{
+    display: flex;
+    gap:2rem;
+    align-items: center;
+    justify-content: space-between;
+    padding:2rem;
+    max-height: 6rem;
+}
+.title-field:first-child{
+    max-width: 40rem;
+}
+
+.editor-controls>button{
+    margin:auto 1rem ;
+    padding:1rem 2rem;
+    font-size: 1.4rem;
+}
+.editor{
+    outline:2px solid red
+}
+
+
+.title-bar .MuiInputBase-root.Mui-disabled::before{
+    border-bottom:none !important;
+}
+.title-bar .MuiInputBase-root.Mui-disabled{
+    color:var(--text-primary) !important;
+}
+.title-bar .MuiInputBase-root::before{
+    border-bottom:0px dashed var(--text-tertiary) !important;
+}

@@ -1,0 +1,7 @@
+{
+    "getAccessToken":"http://localhost:8000/auth/access_token",
+    "getTemplates":"http://localhost:8000/template/",
+    "createTemplate":"http://localhost:8000/template/create",
+    "updateTemplate":"http://localhost:8000/template/update/",
+    "deleteTemplate":"http://localhost:8000/template/delete/"
+}

@@ -1,0 +1,16 @@
+.templates-container{
+    padding:3rem;
+}
+.template-header{
+    font-size:3rem;
+    color:#707070;
+    font-weight: 700;
+    margin:1rem auto;
+}
+
+.template-list{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 30em);
+    grid-gap:1rem;
+    margin-top: 3rem;
+}
