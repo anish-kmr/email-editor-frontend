@@ -4,5 +4,5 @@ This project is extended from react-email-editor to create a Shopify App which c
 
 ## Demo
 
-![Email Editor Demo](https://github.com/anish-kmr/email-editor-frontend/tree/main/demo/demo-email-editor.gif)
+![Email Editor Demo](https://github.com/anish-kmr/email-editor-frontend/blob/main/demo/demo-email-editor.gif)
 
