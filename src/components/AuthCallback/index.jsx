@@ -33,14 +33,28 @@ const AuthCallback = () => {
         message,type,
     });
     }
-    
+    const removeHmacFromParams = (params) => {
+        let paramsList=[]
+        for (const [key, value] of Object.entries(params)) {
+            if(key !== "hmac") paramsList.push(`${key}=${value}`)
+        }
+        return paramsList.join('&')
+    }
     useEffect(()=>{
-        const regex = /[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com/
-        const hash = sha256.hmac.create(process.env.REACT_APP_SHOPIFY_API_SECRET);
-        hash.update(`code=${params.code}&shop=${params.shop}&state=${params.state}&timestamp=${params.timestamp}`)
+        const regex = /[a-zA-Z0-9][a-zA-Z0-9\-]*\.myshopify\.com/ 
         
-        if(params.state === "123456" && hash.hex() === params.hmac && regex.test(params.shop) ){
-            // alert('Done')
+        const hash = sha256.hmac.create(process.env.REACT_APP_SHOPIFY_API_SECRET);
+        const queryWithoutHmac = removeHmacFromParams(params);
+        console.log(queryWithoutHmac)
+        hash.update(queryWithoutHmac)
+        console.log(params.state === "123456")
+        console.log(hash.hex() === params.hmac)
+        console.log(regex.test(params.shop))
+        if(
+            params.state === "123456" &&   //Verifying if the state set during authentication is same 
+            hash.hex() === params.hmac &&  // Verifying the hmac of params(code, shop, state, timestamp)
+            regex.test(params.shop)        // Verifying that shop name follows valid shopify domain
+        ){
             let payload = {
                 shop:params.shop,
                 client_id:process.env.REACT_APP_SHOPIFY_API_KEY,
@@ -73,7 +87,7 @@ const AuthCallback = () => {
     },[])
      return (
         <div>
-            Auth Successfull ! Hurray....
+            Authenticating...
         </div>
     )
 }

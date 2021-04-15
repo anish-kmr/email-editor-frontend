@@ -37,9 +37,11 @@ const Main = () => {
 
     const redirectToAuth = (store)=>{
         let redirect_uri = process.env.REACT_APP_SHOPIFY_APP_URL+'/auth/callback';
-            console.log(redirect_uri)
-            let redirect = `https://${store}/admin/oauth/authorize?client_id=${process.env.REACT_APP_SHOPIFY_API_KEY}&scope=${process.env.REACT_APP_SHOPIFY_API_SCOPES}&state=123456&redirect_uri=${redirect_uri}`
-            window.location.replace(redirect)
+        console.log(redirect_uri)
+        let redirect = `https://${store}/admin/oauth/authorize?client_id=${process.env.REACT_APP_SHOPIFY_API_KEY}&scope=${process.env.REACT_APP_SHOPIFY_API_SCOPES}&state=123456&redirect_uri=${redirect_uri}`
+        
+        // Redirect to Shopify OAuth Page for store authentication
+        window.location.replace(redirect)
     }
 
     const continueLogin = ()=>{
